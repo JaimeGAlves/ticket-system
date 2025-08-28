@@ -137,10 +137,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "accounts.auth.FirebaseAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.AllowAny",  # Isso deve permitir acesso público
+        "rest_framework.permissions.AllowAny",
     ],
 }
 
@@ -153,3 +153,6 @@ SIMPLE_JWT = {
     "SIGNING_KEY": SECRET_KEY,
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
+
+# Firebase
+FIREBASE_CREDENTIALS_PATH = BASE_DIR / "ticket-system-c18e3-firebase-adminsdk-fbsvc-7e05c40783.json"

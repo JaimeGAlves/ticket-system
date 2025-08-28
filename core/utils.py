@@ -6,7 +6,6 @@ from rest_framework import exceptions
 from django.utils import timezone
 from .models import User
 
-# init Firebase (uma vez)
 _app = None
 def init_firebase():
     global _app

@@ -1,0 +1,353 @@
+{% extends './base.html' %}
+{% block title %}Sponsor Dashboard{% endblock %}
+{% block content %}
+{% load static %}
+
+<style>
+    .menu-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .menu-item {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        padding: 10px 20px;
+        background-color: #ffffff;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+    .menu-item:hover {
+        background-color: #f0f0f0;
+    }
+    .menu-item h3 {
+        margin-left: 10px;
+    }
+    .menu-content {
+        display: none;
+        background-color: #fff;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .menu-content.show {
+        display: block;
+    }
+    .sponsor-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .sponsor-item .actions {
+        margin-left: auto; /* Alinha os botões à direita */
+    }
+    .add-button {
+        background: url("{% static 'botao_add.webp' %}") no-repeat center center;
+        background-size: contain;
+        width: 50px;
+        height: 30px;
+        border: none;
+        cursor: pointer;
+    }
+    .add-button:hover {
+        background: url("{% static 'botao_add_press.webp' %}") no-repeat center center;
+        background-size: contain;
+    }
+    .edit-button {
+        background: url("{% static 'botao_edit.webp' %}") no-repeat center center;
+        background-size: contain;
+        width: 50px;
+        height: 30px;
+        border: none;
+        cursor: pointer;
+    }
+    .edit-button:hover {
+        background: url("{% static 'botao_edit_press.webp' %}") no-repeat center center;
+        background-size: contain;
+    }
+    .del-button {
+        background: url("{% static 'botao_del.webp' %}") no-repeat center center;
+        background-size: contain;
+        width: 50px;
+        height: 30px;
+        border: none;
+        cursor: pointer;
+    }
+    .del-button:hover {
+        background: url("{% static 'botao_del_press.webp' %}") no-repeat center center;
+        background-size: contain;
+    }
+    .file-upload {
+        display: flex;
+        align-items: center;
+    }
+    .file-upload button {
+        background: url("{% static 'botao_add_image.webp' %}") no-repeat center center;
+        background-size: contain;
+        width: 50px;
+        height: 50px;
+        border: none;
+        cursor: pointer;
+    }
+    .file-upload button:hover {
+        background: url("{% static 'botao_add_image_press.webp' %}") no-repeat center center;
+        background-size: contain;
+    }
+    .file-upload input[type="file"] {
+        display: none;
+    }
+    .file-upload .file-name {
+        margin-left: 10px;
+        font-size: 14px;
+        color: #333;
+    }
+    .center-button {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    .button-add-custom {
+        background: url("{% static 'botao_add.webp' %}") no-repeat center center;
+        background-size: contain;
+        width: 200px;
+        height: 50px;
+        border: none;
+        cursor: pointer;
+    }
+    .button-add-custom:hover {
+        background: url("{% static 'botao_add_press.webp' %}") no-repeat center center;
+        background-size: contain;
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+    }
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+</style>
+
+<div class="container">
+    <!-- Menu de navegação entre "ADICIONAR PROPAGANDAS" e "Current events" -->
+    <div class="menu-container">
+        <div class="menu-item" onclick="toggleMenu('addevents')">
+            <span class="add-button"></span>
+            <h3>ADICIONAR PROPAGANDAS</h3>
+        </div>
+        <div class="menu-item" onclick="toggleMenu('currentevents')">
+            <span class="edit-button"></span>
+            <h3>GERENCIAR PROPAGANDAS</h3>
+        </div>
+    </div>
+    
+    <!-- ADICIONAR PROPAGANDAS -->
+    <div id="addevents" class="menu-content">
+        <h2>ADICIONAR PROPAGANDAS</h2>
+        <form id="sponsorForm" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="name">Nome do patrocinador:</label> 
+                <input type="text" id="name" name="name" required />
+            </div>
+            <div class="separatorblack"></div>
+            <div class="form-group">
+                <label for="link">Link do patrocinador:</label> 
+                <input type="text" id="link" name="link" required />
+            </div>
+            <div class="separatorblack"></div>
+            <div class="form-group">
+                <label for="id_image_mobile">Imagem para o aplicativo:</label>
+                <div class="file-upload">
+                    <button type="button"></button>
+                    <input type="file" id="id_image_mobile" name="image_mobile" accept="image/*" required>
+                    <span class="file-name"></span>
+                </div>
+            </div>
+            <div class="separatorblack"></div>
+            <div class="form-group">
+                <label for="id_image_web">Imagem para o site:</label>
+                <div class="file-upload">
+                    <button type="button"></button>
+                    <input type="file" id="id_image_web" name="image_web" accept="image/*" required>
+                    <span class="file-name"></span>
+                </div>
+            </div>
+            <div class="separatorblack"></div>
+            <div class="center-button">
+                <button type="submit" class="button-add-custom"></button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Current events -->
+    <div id="currentevents" class="menu-content">
+        <h2>GERENCIAR PROPAGANDAS</h2>
+        <ul class="sponsor_list">
+            {% for sponsor in events %}
+            <li class="sponsor-item">
+                <span class="edit-button"></span>
+                <div>
+                    <a href="{{ sponsor.name }}" target="_blank">{{ sponsor.name }}</a>
+                </div>
+                <div class="actions">
+                    {% comment %} <form method="post" action="{% url 'sponsor_list' sponsor.id %}" onsubmit="confirmDelete(event, this)">
+                        {% csrf_token %}
+                        <button type="submit" class="del-button"></button>
+                    </form> {% endcomment %}
+                </div>
+            </li>
+            <div class="separatorblack"></div>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p id="modal-message"></p>
+    </div>
+</div>
+
+<!-- Confirm Delete Modal -->
+<div id="confirmDeleteModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p>Você tem certeza que deseja excluir este patrocinador?</p>
+      <button id="confirmDeleteButton">Sim</button>
+      <button id="cancelDeleteButton">Não</button>
+    </div>
+</div>
+
+<script>
+    // Função para alternar a exibição dos menus
+    function toggleMenu(menuId) {
+        var contents = document.querySelectorAll('.menu-content');
+        
+        contents.forEach(content => {
+            if (content.id === menuId) {
+                content.classList.add('show');
+            } else {
+                content.classList.remove('show');
+            }
+        });
+    }
+
+    function validateForm() {
+        var name = document.getElementById('name').value;
+        var link = document.getElementById('link').value;
+        var mobileImage = document.getElementById('id_image_mobile').value;
+        var webImage = document.getElementById('id_image_web').value;
+        
+        if (name.trim() === '' || link.trim() === '' || mobileImage.trim() === '' || webImage.trim() === '') {
+            showModal('Por favor, preencha todos os campos.');
+            return false;
+        }
+        
+        return true;
+    }
+    
+    // Script para exibir o nome do arquivo selecionado nos botões de upload
+    document.querySelectorAll('.file-upload button').forEach(button => {
+        const input = button.nextElementSibling;
+        const fileNameSpan = button.nextElementSibling.nextElementSibling;
+        button.addEventListener('click', () => {
+            input.click();
+        });
+        input.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                fileNameSpan.textContent = this.files[0].name;
+            } else {
+                fileNameSpan.textContent = '';
+            }
+        });
+    });
+
+    // Modal script
+    var modal = document.getElementById("myModal");
+    var span = document.getElementsByClassName("close")[0];
+
+    function showModal(message) {
+        document.getElementById("modal-message").textContent = message;
+        modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // Show messages if any
+    document.addEventListener('DOMContentLoaded', (event) => {
+        {% if messages %}
+            var messages = [];
+            {% for message in messages %}
+                messages.push("{{ message }}");
+            {% endfor %}
+            if (messages.length > 0) {
+                showModal(messages.join('\n'));
+            }
+        {% endif %}
+    });
+
+    // Confirm delete logic
+    var deleteForm;
+    function confirmDelete(event, form) {
+        event.preventDefault();
+        deleteForm = form;
+        confirmDeleteModal.style.display = "block";
+    }
+
+    document.getElementById("confirmDeleteButton").onclick = function() {
+        deleteForm.submit();
+        confirmDeleteModal.style.display = "none";
+    }
+
+    document.getElementById("cancelDeleteButton").onclick = function() {
+        confirmDeleteModal.style.display = "none";
+    }
+
+    span[1].onclick = function() {
+        confirmDeleteModal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == confirmDeleteModal) {
+            confirmDeleteModal.style.display = "none";
+        }
+    }
+    
+</script>
+{% endblock %}

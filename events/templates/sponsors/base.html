@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sidebar{% endblock %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+        }
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: linear-gradient(to top, #2D0AC7, #0A24D1, #0051BA, #0A7DD1, #0AC7BE);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .sidebar img {
+            height: 100px;
+            margin-bottom: 20px;
+        }
+        .sidebar h1 {
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+        .sidebar a {
+            color: #ffffff;
+            text-decoration: none;
+            margin: 10px 0;
+            font-size: 18px;
+            display: block;
+            text-align: center;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+        .sidebar a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .separator {
+            width: 80%;
+            height: 1px;
+            background-color: rgba(255, 255, 255, 0.2);
+            margin: 3px 0;
+        }
+        .separatorblack {
+            width: 98%;
+            height: 1px;
+            background-color: rgba(0, 0, 0, 0.2);
+            margin: 20px 0;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+        }
+        .sidebar .quit {
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            position: absolute;
+            bottom: 20px;
+            text-align: center;
+        }
+        .sidebar .quit:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .form-group input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .form-group input[type="file"] {
+            display: none;
+        }
+        .file-upload {
+            position: relative;
+            width: fit-content;
+        }
+        .file-upload button {
+            background: url("{% static 'botao_add_image.webp' %}") no-repeat center center;
+            background-size: contain;
+            width: 50px;
+            height: 50px;
+            border: none;
+            cursor: pointer;
+        }
+        .file-upload button:hover {
+            background: url("{% static 'botao_add_image_press.webp' %}") no-repeat center center;
+            background-size: contain;
+        }
+        .file-upload input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .center-button {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }        
+        .button-add-custom {
+            background: url("{% static 'botao_add.webp' %}") no-repeat center center;
+            background-size: contain;
+            width: 200px;
+            height: 50px;
+            border: none;
+            cursor: pointer;
+        }
+        .button-add-custom:hover {
+            background: url("{% static 'botao_add_press.webp' %}") no-repeat center center;
+            background-size: contain;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="{% static 'logo-branco-icon.png' %}" alt="Logo">
+        <h1>PAINEL ADMINISTRATIVO</h1>
+        <a href="{% url 'sponsor_list' %}">Início</a>
+        <div class="separator"></div>
+        <a href="{% url 'sponsor_list' %}">Propagandas</a>
+        <div class="separator"></div>
+        <a href="{% url 'sponsor_list' %}">Notícias</a>
+        <div class="separator"></div>
+        <a href="{% url 'sponsor_list' %}">Programação</a>
+        <a href="{% url 'sponsor_list' %}" class="quit">Sair</a>
+    </div>
+    <div class="main-content">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

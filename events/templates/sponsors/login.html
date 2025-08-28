@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Webrádio Dimusica</title>
+    <link rel="icon" href="{% static 'events/assets/favicon.ico' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Mulish&display=swap"
+        rel="stylesheet"
+    >
+    <link rel="stylesheet" href="{% static 'events/css/login.css' %}">
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-side">
+            <div class="my-form__wrapper">
+                <a href="#" title="Logo">
+                    <img class="logo" src="{% static 'events/assets/logo.webp' %}" alt="Logo">
+                </a>
+                <div class="login-welcome-row">
+                    <h1>Bem-vindo novamente &#x1F44F;</h1>
+                    <p>Por favor, insira seu login!</p>
+                </div>
+                <form class="my-form" method="post">
+                    {% csrf_token %}
+                    <div class="socials-row">
+                    </div>
+                    <div class="text-field">
+                        <label for="email">Email:</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Seu Email"
+                            required
+                        >
+                        <img
+                            alt="Email Icon"
+                            title="Email Icon"
+                            src="{% static 'events/assets/email.svg' %}"
+                        >
+                    </div>
+                    <div class="text-field">
+                        <label for="password">Senha:</label>
+                        <input
+                            id="password"
+                            type="password"
+                            name="password"
+                            placeholder="Sua Senha"
+                            title="A senha deve ter pelo menos 6 caracteres e conter pelo menos uma letra e um dígito."
+                            required
+                        >
+                        <img
+                            alt="Password Icon"
+                            title="Password Icon"
+                            src="{% static 'events/assets/password.svg' %}"
+                        >
+                    </div>
+                    <input type="submit" class="my-form__button" value="Entrar">
+                </form>
+            </div>
+        </div>
+        <div class="info-side">
+            <img src="{% static 'events/assets/background-login.jpg' %}" alt="Mock" class="mockup">
+        </div>
+    </div>
+    <script src="{% static 'events/js/script.js' %}"></script>
+</body>
+</html>
